@@ -133,7 +133,7 @@ import { ApolloServerPluginLandingPageDisabled, ApolloServerPluginLandingPageLoc
         bodyParserConfig: { limit: '50mb', parameterLimit: 500000000 },
     });
 
-    mongoose.connect(config.MONGODB, { useNewUrlParser: true })
+    mongoose.connect(config.MONGODB, { useNewUrlParser: true, useUnifiedTopology: true })
         //PROD: , { autoIndex: false }); //Mongoose recommends as it significantly affects performance. By default createIndex is called
         .then(() => {
             console.log(`MongoDB connected`);

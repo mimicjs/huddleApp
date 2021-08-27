@@ -2,14 +2,14 @@
   "name": "huddleappserver",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
-    "prod": "set NODE_ENV=production && node index",
+    "prod": "set NODE_ENV=production && node ./dist/index.js",
     
-    "test": "set NODE_ENV=test && nodemon index && echo \"Error: no test specified\" && exit 1",
-    "dev": "set NODE_ENV=development && nodemon index",
-    "serve": "node index",
-    "start": "set NODE_ENV=production && node index",
+    "test": "set NODE_ENV=test && nodemon ./dist/index.js && echo \"Error: no test specified\" && exit 1",
+    "dev": "set NODE_ENV=development && nodemon ./dist/index.js",
+    "serve": "node ./dist/index.js",
+    "start": "set NODE_ENV=production && node ./dist/index.js",
 
     "lint:check": "eslint . --ext=js,jsx;  exit 0",
     "lint:fix": "eslint . --ext=js,jsx --fix;  exit 0",
