@@ -31,6 +31,7 @@ const barMenusStyle = {
     TaskNavbar: {
         height: '100vh',
         backgroundColor: '#242424',
+        minHeight: 'unset',
     },
     TaskNavbarListItem: {
         marginLeft: '-10px',
