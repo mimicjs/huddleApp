@@ -3,7 +3,11 @@ import modalStyle from "assets/jss/mkr/modalStyle";
 const dashboardPageStyle = {
     ...modalStyle,
     rootContainer: {
+        width: '100vw',
+        height: '100vh',
+        position: 'relative',
         maxHeight: '100vh',
+        maxWidth: '100vw',
         margin: '0 auto',
         overflow: 'hidden',
         backgroundColor: '#242424',
@@ -15,15 +19,9 @@ const dashboardPageStyle = {
     },
     rootGrid: {
         display: 'flex',
+
         paddingLeft: 0,
         paddingRight: 0,
-    },
-    mainSection: {
-        alignContent: 'start',
-        paddingLeft: '20px',
-        paddingRight: '40px',
-        width: '100%',
-        height: '100vh',
     },
     conversationsGridHeader: {
         paddingTop: '5px',
@@ -33,13 +31,10 @@ const dashboardPageStyle = {
     conversationsGridBody: {
         maxHeight: 'inherit',
         overflowY: 'scroll',
-        "& svg": {
-            position: 'absolute',
-            marginTop: '8px'
-        },
     },
     conversationsGridRow: {
         minWidth: 275,
+        display: 'flex',
         marginTop: '15px',
         "& svg": {
             height: '50px',
@@ -53,12 +48,11 @@ const dashboardPageStyle = {
         paddingBottom: '5px',
         border: 'transparent',
         borderRadius: '10px',
-        marginLeft: '60px',
+        width: '100%',
         whiteSpace: 'pre-wrap',
-        "& div": {
-            paddingLeft: '10px',
-            wordWrap: 'anywhere',
-        },
+        paddingLeft: '10px',
+        paddingRight: '10px',
+        wordWrap: 'anywhere',
         "& hr": {
             marginTop: '4px',
         },
@@ -66,9 +60,11 @@ const dashboardPageStyle = {
     conversationsGridCellOptions: {
         display: 'flex',
         float: 'right',
-        "& div": {
-            paddingLeft: '0px',
-        },
+        paddingLeft: '0px',
+        paddingRight: '0px',
+        justifyContent: 'right',
+        flexWrap: 'wrap',
+        width: '160px',
         '& svg': {
             position: 'relative',
             margin: 0,
@@ -113,33 +109,11 @@ const dashboardPageStyle = {
             height: '20px',
         }
     },
+    conversationsGridPrimaryCellHeaderInner: {
+        display: 'inline-flex',
+    },
     conversationsGridPrimaryCellBody: {
         marginTop: '5px',
-    },
-    conversationsGridNestedCellRow_Level01: {
-        padding: '5px',
-        display: 'flex',
-        marginTop: '10px',
-        "& svg:first-child": {
-            width: '30px',
-            height: '30px',
-        },
-        "& a": {
-            marginLeft: '10px'
-        },
-        "& a:last-child": {
-            marginLeft: '20px'
-        },
-        "& svg:last-child": {
-            width: '20px',
-            height: '20px',
-        },
-    },
-    conversationsGridNestedCellContent_Level01: {
-        border: 'transparent',
-        borderRadius: '3px',
-        marginTop: '-5px',
-        marginLeft: '10px',
     },
     conversationsGridPrimaryCellAction: {
         "& svg": {
@@ -150,27 +124,36 @@ const dashboardPageStyle = {
             width: '18px',
         }
     },
-    conversationsSubmitArea: {
-        marginTop: '17px',
-        marginLeft: '60px',
-        marginRight: '15px',
-        "& div~button": {
-            backgroundColor: '#8081d7',
+    conversationsGridNestedCellHeader:
+    {
+        display: 'flex',
+    },
+    conversationsGridNestedCellRow: {
+        padding: '5px',
+        display: 'flex',
+        marginTop: '10px',
+        "& svg:first-child": {
+            width: '30px',
+            height: '30px',
+        },
+        "& a": {
+            marginLeft: '10px'
+        },
+        "& svg:last-child": {
+            width: '20px',
+            height: '20px',
         },
     },
-    /*TextEditorConfig: { //node_modules\jodit\src\config.ts
-        toolbar: false,
-        presets: {},
-        //toolbarButtonSize: "small",
-        //buttons: ['bold', 'italic', 'underline', 'strikethrough', 'ul', 'ol', 'fullsize']
-        theme: 'dark',
-        minHeight: '100px',
-        height: '100px',
-        overflowY: 'scroll',
-        '& a': {
-            display: 'none'
-        }
-    }*/
+    conversationsGridNestedCellContent: {
+        border: 'transparent',
+        borderRadius: '3px',
+        marginTop: '-5px',
+    },
+    conversationsGridNestedCellContent: {
+        marginTop: '-2px',
+    },
+    textFieldSectionStyle: { //Material-UI Core TextField
+    },
     textFieldStyle: { //Material-UI Core TextField
         backgroundColor: '#666',
         border: 'transparent',
@@ -185,34 +168,78 @@ const dashboardPageStyle = {
     submitButton: {
         borderRadius: '5px',
     }
+    /*TextEditorConfig: { //node_modules\jodit\src\config.ts
+        toolbar: false,
+        presets: {},
+        //toolbarButtonSize: "small",
+        //buttons: ['bold', 'italic', 'underline', 'strikethrough', 'ul', 'ol', 'fullsize']
+        theme: 'dark',
+        minHeight: '100px',
+        height: '100px',
+        overflowY: 'scroll',
+        '& a': {
+            display: 'none'
+        }
+    }*/
 }
 
-export function ConversationsGridCellStyle(theme) {
+export function ConversationsGridStyle(theme) {
     return {
-        [theme.breakpoints.down("sm")]: {
+        width: '100%',
+        paddingRight: '0px',
+        paddingLeft: '0px',
+        "& div>svg:first-child": {
+            display: 'none',
+        },
+        [theme.breakpoints.up("sm")]: {
+            alignContent: 'start',
+            paddingLeft: '20px',
+            paddingRight: '40px',
+            width: '100%',
+            height: '100vh',
+            "& div>svg:first-child": {
+                marginRight: '10px',
+                display: 'inline-grid',
+            },
         }
     };
 };
 
 export function ConversationsGridHeaderStyle(theme) {
     return {
-        paddingBottom: '10px',
-        [theme.breakpoints.down("sm")]: {
+        [theme.breakpoints.up("sm")]: {
+            paddingBottom: '10px',
         }
     };
 };
 
 export function ConversationsGridBodyStyle(theme) {
     return {
-        width: '100%',
-        maxHeight: '66vh',
-        [theme.breakpoints.down("sm")]: {
-            maxHeight: '58vh',
-            "& svg:nth-child(1)": {
-                //display: 'none',
-            }
+        maxHeight: '60vh',
+        [theme.breakpoints.up("md")]: {
+            maxHeight: '64vh',
+        },
+        [theme.breakpoints.up("xl")]: {
+            maxHeight: '66vh',
+        }
+    }
+};
+
+export function ConversationsGridTextEditorAreaStyle(theme) {
+    return {
+        position: '-webkit-sticky',
+        position: 'sticky',
+        bottom: '0',
+        paddingLeft: '15px',
+        paddingRight: '15px',
+        paddingBottom: '17px',
+        marginTop: '17px',
+        [theme.breakpoints.up("sm")]: {
+            paddingLeft: '75px',
+            "& div~button": {
+                backgroundColor: '#8081d7',
+            },
         }
     };
 };
-
 export default dashboardPageStyle;
