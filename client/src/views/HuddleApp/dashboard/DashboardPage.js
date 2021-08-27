@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef, useLayoutEffect } from 'react';
 import { useHistory } from "react-router-dom";
 
 import { useMutation, useQuery } from '@apollo/react-hooks';
@@ -12,13 +12,12 @@ import Box from '@material-ui/core/Box';
 import { makeStyles } from "@material-ui/core/styles";
 import { styled } from '@material-ui/core/styles';
 
-import GridContainer from "components/Grid/GridContainer";
 import GridItem from "components/Grid/GridItem";
 import CustomButton from "../../../components/CustomButtons/Button";
 import Editor from '../../../components/TextEditor/TextEditor';
 import { barMenuStyles, AppBar, TaskNavbar, ChannelBar } from '../BarMenus';
 import { ConversationsGridHeader, ConversationsGridBody } from './ConversationsGrid';
-import styles, { ConversationsGridHeaderStyle, ConversationsGridBodyStyle } from "assets/jss/mkr/views/dashboardPage";
+import styles, { ConversationsGridStyle, ConversationsGridHeaderStyle, ConversationsGridBodyStyle, ConversationsGridTextEditorAreaStyle } from "assets/jss/mkr/views/dashboardPage";
 
 export default function Dashboard(props) {
   const { Access_Session } = useContext(AuthContext);
@@ -49,7 +48,7 @@ export default function Dashboard(props) {
       getPostsArrayRef.current = vGetPosts_data.getPosts;
     }
     else {
-      if (vGetPosts_error.graphQLErrors && vGetPosts_error.graphQLErrors.length > 0) {
+      if (vGetPosts_error && vGetPosts_error.graphQLErrors && vGetPosts_error.graphQLErrors.length > 0) {
         Object.values(Object.values(vGetPosts_error.graphQLErrors[0].extensions)[0]).forEach(errorMessage => {
           errorsArray.push(errorMessage);
         })
@@ -71,7 +70,7 @@ export default function Dashboard(props) {
   //CREATE POST
   //
   const [createPostErrors, setCreatePostErrors] = useState();
-  function submitCreatePost(pTextEditorID) {
+  function processCreatePost(pTextEditorID) {
     const vTextEditorCreatePost = document.getElementById(pTextEditorID);
     if (vTextEditorCreatePost && vTextEditorCreatePost.value.trim() !== '') {
       setCreatePostErrors();
@@ -84,6 +83,7 @@ export default function Dashboard(props) {
     update(proxy, { data: { createPost: createPost_SuccessResponse } }) {
       if (createPost_SuccessResponse !== null && typeof createPost_SuccessResponse === 'object'
         && Object.keys(createPost_SuccessResponse).length > 0 && createPost_SuccessResponse.status === 'successful') {
+        isScrollToBottomDisabledRef.current = false;
         console.log("successfully created post in DB")
       } else {
         console.log("failed to created post in DB")
@@ -301,9 +301,9 @@ export default function Dashboard(props) {
   //
   //CSS & STYLES
   //
-  const mergedStyles = { ...barMenuStyles, ...styles }
-  const useStyles = makeStyles(theme => mergedStyles);
-  const classes = useStyles();
+  let mergedStyles = { ...barMenuStyles, ...styles }
+  let useStyles = makeStyles(theme => mergedStyles);
+  let classes = useStyles();
 
   const [channelBarClosed, setChannelBarClosed] = useState(false);
 
@@ -311,22 +311,49 @@ export default function Dashboard(props) {
     setChannelBarClosed(!channelBarClosed);
   };
 
-  const ConversationsGridHeaderStyled = styled(Box)(
+  let ConversationsGridStyled = styled(Box)(
+    ({ theme }) => ConversationsGridStyle(theme)
+  );
+
+  let ConversationsGridHeaderStyled = styled(Box)(
     ({ theme }) => ConversationsGridHeaderStyle(theme)
   );
 
-  const ConversationsGridBodyStyled = styled(Box)(
+  let ConversationsGridBodyStyled = styled(Box)(
     ({ theme }) => ConversationsGridBodyStyle(theme)
   );
 
+  let ConversationsGridTextEditorAreaStyled = styled(Box)(
+    ({ theme }) => ConversationsGridTextEditorAreaStyle(theme)
+  );
+
   //
-  //COMPONENT'S COMPONENTDIDMOUNT
+  //Scroll handler for Conversations Grid
   //
-  function OnDOMLoad() {
-    if (isLoadingScreenOn) {
-      setIsLoadingScreenOn(false);
+  const isScrollToBottomDisabledRef = useRef(false); //Allow scroll to scroll to bottom (e.g. on Mount or this user made a new Post)
+  const conversationsGridScrollRef = useRef(0); //Updated as User scrolls
+  const previousRenderConversationsGridScrollHeightRef = useRef(0); //Before rerender - the scroll's height
+  function scrollConversationsGrid() {
+    const mainSectionGridBody = document.getElementById("conversations-mainsection-grid-body");
+    if (mainSectionGridBody && mainSectionGridBody.scrollHeight > 0) { //Only when scroll mounted (scrollHeight should be > 10)
+      if ((!isScrollToBottomDisabledRef.current) //Top to Bottom scroll only on Mount and not User @ top scroll
+        || (previousRenderConversationsGridScrollHeightRef.current === conversationsGridScrollRef.current)) { //Scroll is at Bottom for updating Feed
+        isScrollToBottomDisabledRef.current = true; //Indicate scroll has mounted
+        mainSectionGridBody.scrollTop = mainSectionGridBody.scrollHeight; //note: scrollTop assigned may not be equal to scrollHeight
+        previousRenderConversationsGridScrollHeightRef.current = mainSectionGridBody.scrollTop;
+        setPreviousConversationsGridScrollRef(mainSectionGridBody.scrollTop);
+      }
+      else { //Scroll on re-render
+        mainSectionGridBody.scrollTop = conversationsGridScrollRef.current; //Back to User's scroll position
+      }
     }
   }
+  function setPreviousConversationsGridScrollRef(pScrollTopValue) {
+    conversationsGridScrollRef.current = pScrollTopValue;
+  }
+  useLayoutEffect(() => { //useLayoutEffect - Synchronous and before Paint
+    scrollConversationsGrid();
+  });
 
   //
   //REPLY & COMMENT display toggles
@@ -334,51 +361,61 @@ export default function Dashboard(props) {
   const [rowIDsToShowReplyBox, setRowIDsToShowReplyBox] = useState([]);
   const [rowIDsToShowComments, setRowIDsToShowComments] = useState([]);
 
+  //
+  //COMPONENT'S COMPONENT_DID_MOUNT
+  //
+  function OnDOMLoad() {
+    if (isLoadingScreenOn) {
+      setTimeout(() => setIsLoadingScreenOn(false), 500); //Delay by 500ms
+    }
+  }
+
   return (
     <Box>
-      {isLoadingScreenOn ?
-        <div className={classes.loadingScreen}>
-          <CircularProgress />
-        </div>
-        :
-        <div className={classes.loadingScreenFadeOut} />
-      }
-      <CssBaseline />
-      <GridContainer className={classes.rootContainer}>
-        <AppBar classes={classes} toggleOpenChannel={toggleTaskbarDrawer} />
-        <GridItem className={classes.rootGrid} xs={12}>
-          <TaskNavbar classes={classes} />
-          <ChannelBar open={!channelBarClosed} variant="permanent"
-            classes={classes} toggleOpenChannel={toggleTaskbarDrawer}
-          />
-          <GridContainer className={classes.mainSection}>
-            <GridItem xs={12}>
-              <ConversationsGridHeaderStyled>
-                <ConversationsGridHeader classes={classes} />
-              </ConversationsGridHeaderStyled>
-            </GridItem>
-            <ConversationsGridBodyStyled>
-              <GridItem id={'conversations-mainsection-grid-body'} className={classes.conversationsGridBody} xs={12}>
-                <ConversationsGridBody
-                  classes={classes}
-                  componentDidMount={OnDOMLoad}
-                  dataArray={getPostsArrayRef.current ? getPostsArrayRef.current : null}
-                  processGetPostOrCommentByID={processGetPostOrCommentByID}
-                  commentsCollection={commentsCollection}
-                  rowIDsToShowComments={rowIDsToShowComments}
-                  setRowIDsToShowComments={setRowIDsToShowComments}
-                  rowIDsToShowReplyBox={rowIDsToShowReplyBox}
-                  setRowIDsToShowReplyBox={setRowIDsToShowReplyBox}
-                  submitCreateComment={submitCreateComment}
-                  processEmotePostOrComment={processEmotePostOrComment}
-                  processDeletePostOrComment={processDeletePostOrComment}
-                  textFieldStyle={styles.textFieldStyle}
-                  textFieldInputStyle={styles.textFieldInputStyle}
-                />
+        {isLoadingScreenOn ?
+          <div className={classes.loadingScreen}>
+            <CircularProgress />
+          </div>
+          :
+          <div className={classes.loadingScreenFadeOut} />
+        }
+        <CssBaseline />
+        <div className={classes.rootContainer}>
+          <AppBar classes={classes} toggleOpenChannel={toggleTaskbarDrawer} />
+          <GridItem className={classes.rootGrid} xs={12}>
+            <TaskNavbar classes={classes} />
+            <ChannelBar open={!channelBarClosed} variant="permanent"
+              classes={classes} toggleOpenChannel={toggleTaskbarDrawer}
+            />
+            <ConversationsGridStyled>
+              <GridItem xs={12}>
+                <ConversationsGridHeaderStyled>
+                  <ConversationsGridHeader classes={classes} />
+                </ConversationsGridHeaderStyled>
               </GridItem>
-            </ConversationsGridBodyStyled>
-            <GridItem>
-              <div className={classes.conversationsSubmitArea}>
+              <ConversationsGridBodyStyled>
+                <GridItem id={'conversations-mainsection-grid-body'} className={classes.conversationsGridBody} xs={12}
+                  onScroll={(event) => setPreviousConversationsGridScrollRef(event.target.scrollTop)}>
+                  <ConversationsGridBody
+                    key={'ConversationsGridBody'}
+                    classes={classes}
+                    componentDidMount={OnDOMLoad}
+                    postsArray={getPostsArrayRef.current ? getPostsArrayRef.current : null}
+                    processGetPostOrCommentByID={processGetPostOrCommentByID}
+                    commentsCollection={commentsCollection}
+                    rowIDsToShowComments={rowIDsToShowComments}
+                    setRowIDsToShowComments={setRowIDsToShowComments}
+                    rowIDsToShowReplyBox={rowIDsToShowReplyBox}
+                    setRowIDsToShowReplyBox={setRowIDsToShowReplyBox}
+                    submitCreateComment={submitCreateComment}
+                    processEmotePostOrComment={processEmotePostOrComment}
+                    processDeletePostOrComment={processDeletePostOrComment}
+                    textFieldStyle={styles.textFieldStyle}
+                    textFieldInputStyle={styles.textFieldInputStyle}
+                  />
+                </GridItem>
+              </ConversationsGridBodyStyled>
+              <ConversationsGridTextEditorAreaStyled>
                 {/* notification bar or popup for these below errors */}
                 {getPostsErrors ? 'getPostsErrors: ' + getPostsErrors : null}
                 {createPostErrors ? 'createPostErrors: ' + createPostErrors : null}
@@ -387,12 +424,11 @@ export default function Dashboard(props) {
                 {deletePostOrCommentErrors ? 'deletePostOrCommentErrors: ' + deletePostOrCommentErrors : null}
                 {emotePostOrCommentErrors ? 'emotePostOrCommentErrors: ' + emotePostOrCommentErrors : null}
                 <Editor id="conversations-textEditor-createPost" style={styles.textFieldStyle} inputStyle={styles.textFieldInputStyle} />
-                <CustomButton className={classes.submitButton} onClick={() => submitCreatePost('conversations-textEditor-createPost')} color={"huddle"} size={"sm"} fullWidth children={"Send"} />
-              </div>
-            </GridItem>
-          </GridContainer>
-        </GridItem>
-      </GridContainer>
-    </Box >
+                <CustomButton className={classes.submitButton} onClick={() => processCreatePost('conversations-textEditor-createPost')} color={"huddle"} size={"sm"} fullWidth children={"Send"} />
+              </ConversationsGridTextEditorAreaStyled>
+            </ConversationsGridStyled>
+          </GridItem>
+        </div>
+    </Box>
   );
 }
