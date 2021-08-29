@@ -1,7 +1,7 @@
 # huddleApp
 https://huddleapp-server.herokuapp.com/profile
 
-Typescript, GraphQL, ReactJS, ES6, ExpressJS, NodeJS
+Typescript, GraphQL, ReactJS, MongoDB, ES6, ExpressJS, NodeJS
 
 Features:
 * Register & Login system (JWT)
