@@ -1,5 +1,5 @@
 # huddleApp
-https://huddleapp-server.herokuapp.com/
+https://huddleapp-server.herokuapp.com/profile
 
 Features:
 * Register & Login system (JWT)
