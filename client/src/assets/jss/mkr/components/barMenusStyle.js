@@ -18,9 +18,8 @@ const barMenusStyle = {
         transition: 'all .5s ease-in-out',
         '-moz-transition': 'all .5s ease-in-out',
         '-webkit-transition': 'all .5s  ease-in-out',
-
     },
-    AppBar: {
+    appBar: {
         position: 'sticky',
         backgroundColor: '#464776',
         minHeight: '65px',
@@ -28,19 +27,22 @@ const barMenusStyle = {
     },
     dropdownLink: {
     },
-    TaskNavbar: {
+    taskNavbar: {
         height: '100vh',
         backgroundColor: '#242424',
         minHeight: 'unset',
     },
-    TaskNavbarListItem: {
+    taskNavbarListItem: {
         marginLeft: '-10px',
     },
-    ChannelBar: {
+    channelBar: {
         '& >div': {
             backgroundColor: '#242424',
             color: '#e1e1e1',
             borderColor: '#e1e1e1'
+        },
+        '& li': {
+            cursor: 'pointer',
         }
     }
 }

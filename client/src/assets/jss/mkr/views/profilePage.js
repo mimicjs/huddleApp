@@ -18,6 +18,9 @@ const profilePageStyle = {
     maxWidth: "600px",
     color: "#999",
     textAlign: "center !important",
+    '& ul':{
+      textAlign: 'left',
+    },
   },
   name: {
     marginTop: "-80px",

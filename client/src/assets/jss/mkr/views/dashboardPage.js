@@ -1,7 +1,4 @@
-import modalStyle from "assets/jss/mkr/modalStyle";
-
 const dashboardPageStyle = {
-    ...modalStyle,
     rootContainer: {
         width: '100vw',
         height: '100vh',
@@ -19,168 +16,12 @@ const dashboardPageStyle = {
     },
     rootGrid: {
         display: 'flex',
-
         paddingLeft: 0,
         paddingRight: 0,
-    },
-    conversationsGridHeader: {
-        paddingTop: '5px',
-        paddingBottom: '0',
-        color: '#e1e1e1',
-    },
-    conversationsGridBody: {
-        maxHeight: 'inherit',
-        overflowY: 'scroll',
-    },
-    conversationsGridRow: {
-        minWidth: 275,
-        display: 'flex',
-        marginTop: '15px',
-        "& svg": {
-            height: '50px',
-            width: '50px',
-        },
-    },
-    conversationsGridCell: {
-        backgroundColor: '#373737',
-        color: '#e1e1e1',
-        paddingTop: '10px',
-        paddingBottom: '5px',
-        border: 'transparent',
-        borderRadius: '10px',
-        width: '100%',
-        whiteSpace: 'pre-wrap',
-        paddingLeft: '10px',
-        paddingRight: '10px',
-        wordWrap: 'anywhere',
-        "& hr": {
-            marginTop: '4px',
-        },
-    },
-    conversationsGridCellOptions: {
-        display: 'flex',
-        float: 'right',
-        paddingLeft: '0px',
-        paddingRight: '0px',
-        justifyContent: 'right',
-        flexWrap: 'wrap',
-        width: '160px',
-        '& svg': {
-            position: 'relative',
-            margin: 0,
-            width: '20px',
-            height: '20px',
-        },
-    },
-    emoteSection: {
-        display: 'flex',
-        '& a': {
-            color: '#8081d74a'
-        }
-    },
-    emoteVoted: {
-        '& a': {
-            color: '#8081d7'
-        }
-    },
-    emoteFavorite_UserVoted: {
-        '& a': {
-            color: '#8081d7'
-        },
-        '& svg': {
-            color: '#dd1616', //red
-        }
-    },
-    emoteThumbUp_UserVoted: {
-        '& a': {
-            color: '#8081d7'
-        },
-        '& svg': {
-            color: '#2082ff', //blue
-        }
-    },
-    conversationsGridPrimaryCellHeader: {
-        '& svg:first-child': {
-            position: 'relative',
-            float: 'right',
-            marginTop: '1px',
-            marginRight: '10px',
-            width: '20px',
-            height: '20px',
-        }
-    },
-    conversationsGridPrimaryCellHeaderInner: {
-        display: 'inline-flex',
-    },
-    conversationsGridPrimaryCellBody: {
-        marginTop: '5px',
-    },
-    conversationsGridPrimaryCellAction: {
-        "& svg": {
-            position: 'relative',
-            marginTop: '0px',
-            marginBottom: '-3px',
-            height: '18px',
-            width: '18px',
-        }
-    },
-    conversationsGridNestedCellHeader:
-    {
-        display: 'flex',
-    },
-    conversationsGridNestedCellRow: {
-        padding: '5px',
-        display: 'flex',
-        marginTop: '10px',
-        "& svg:first-child": {
-            width: '30px',
-            height: '30px',
-        },
-        "& a": {
-            marginLeft: '10px'
-        },
-        "& svg:last-child": {
-            width: '20px',
-            height: '20px',
-        },
-    },
-    conversationsGridNestedCellContent: {
-        border: 'transparent',
-        borderRadius: '3px',
-        marginTop: '-5px',
-    },
-    conversationsGridNestedCellContent: {
-        marginTop: '-2px',
-    },
-    textFieldSectionStyle: { //Material-UI Core TextField
-    },
-    textFieldStyle: { //Material-UI Core TextField
-        backgroundColor: '#666',
-        border: 'transparent',
-        borderRadius: '5px',
-        width: '100%',
-        padding: '12px 12px 10px 12px',
-        color: "secondary",
-    },
-    textFieldInputStyle: { //Material-UI Core TextField
-        color: "#e1e1e1",
     },
     submitButton: {
         borderRadius: '5px',
     }
-    /*TextEditorConfig: { //node_modules\jodit\src\config.ts
-        toolbar: false,
-        presets: {},
-        //toolbarButtonSize: "small",
-        //buttons: ['bold', 'italic', 'underline', 'strikethrough', 'ul', 'ol', 'fullsize']
-        theme: 'dark',
-        minHeight: '100px',
-        height: '100px',
-        overflowY: 'scroll',
-        '& a': {
-            display: 'none'
-        }
-    }*/
 }
 
 export function ConversationsGridStyle(theme) {
@@ -205,14 +46,6 @@ export function ConversationsGridStyle(theme) {
     };
 };
 
-export function ConversationsGridHeaderStyle(theme) {
-    return {
-        [theme.breakpoints.up("sm")]: {
-            paddingBottom: '10px',
-        }
-    };
-};
-
 export function ConversationsGridBodyStyle(theme) {
     return {
         maxHeight: '60vh',
@@ -227,8 +60,7 @@ export function ConversationsGridBodyStyle(theme) {
 
 export function ConversationsGridTextEditorAreaStyle(theme) {
     return {
-        position: '-webkit-sticky',
-        position: 'sticky',
+        position: '-webkit-fixed',
         bottom: '0',
         paddingLeft: '15px',
         paddingRight: '15px',
@@ -242,4 +74,5 @@ export function ConversationsGridTextEditorAreaStyle(theme) {
         }
     };
 };
+
 export default dashboardPageStyle;

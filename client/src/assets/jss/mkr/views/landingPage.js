@@ -15,6 +15,9 @@ const landingPageStyle = {
     color: "#FFFFFF",
     textDecoration: "none",
   },
+  newToHuddleText: {
+    color: '#f7caff'
+  },
   subtitle: {
     fontSize: "1.313rem",
     maxWidth: "500px",
