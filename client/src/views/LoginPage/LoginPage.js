@@ -31,7 +31,7 @@ import Slide from "@material-ui/core/Slide";
 
 import styles from "assets/jss/mkr/views/loginPage";
 
-import image from "assets/img/bg7.jpg";
+import image from "assets/img/bg7.jpg"; //https://unsplash.com/photos/F7HGqkkMYAU
 
 const useStyles = makeStyles(styles);
 

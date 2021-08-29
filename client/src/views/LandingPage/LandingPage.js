@@ -44,7 +44,7 @@ export default function LandingPage(props) {
         }}
         {...rest}
       />
-      <Parallax filter image={require("assets/img/landing-bg.jpg").default}>
+      <Parallax filter image={require("assets/img/landing-bg.jpg").default}> {/* https://unsplash.com/photos/zepnJQycr4U */}
         <div className={classes.container}>
           <GridContainer>
             <GridItem xs={12} sm={12} md={8}>
@@ -84,7 +84,7 @@ export default function LandingPage(props) {
                   </Button>
                   <Link
                     to={URL.register}>
-                    <h6>
+                    <h6 className={classes.newToHuddleText}>
                       New to Huddle? Register here
                     </h6>
                   </Link>

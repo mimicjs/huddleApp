@@ -1,15 +1,14 @@
 import React from "react";
-import { makeStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import TextField from '@material-ui/core/TextField';
+import { makeStyles } from "@material-ui/core/styles";
+import textEditorStyle from "assets/jss/mkr/components/textEditor";
 //import JoditEditor from "jodit-react";
 
-export default function Editor(props) {
-
-    const useStyles = makeStyles((theme) => ({
-        inputStyle: props.inputStyle,
-    }));
-
-    const classes = useStyles();
+export default function TextEditor(props) {
+    let useStyles = makeStyles(theme => textEditorStyle);
+    let classes = useStyles();
+    classes = { ...classes, ...props.classes };
 
     return (
         //
@@ -25,10 +24,13 @@ export default function Editor(props) {
         //<Editor id="conversations-textEditor-createPost" config={styles.TextEditorConfig} />
         <TextField
             id={props.id}
-            style={props.style}
+            className={classes.textFieldStyle}
             multiline
             rows='3'
-            InputProps={{ className: classes.inputStyle }}
+            InputProps={{ className: classes.textFieldInputStyle }}
         />
     );
 }
+TextEditor.propTypes = {
+    classes: PropTypes.object,
+};

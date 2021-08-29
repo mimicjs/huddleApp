@@ -1,4 +1,7 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { URL } from "../../AppLinks"
 
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -11,28 +14,38 @@ import MuiDrawer from '@material-ui/core/Drawer';
 
 import MuiAppBar from '@material-ui/core/AppBar';
 
+import ExitToApp from "@material-ui/icons/ExitToApp";
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import ForumIcon from '@material-ui/icons/Forum';
 import PublicIcon from '@material-ui/icons/Public';
 
-import classNames from 'classnames';
+import { makeStyles } from "@material-ui/core/styles";
 import { styled } from '@material-ui/core/styles';
-import styles, { taskNavbarStyleBase, channelBarStyleBase, channelBarStyleClosed } from "assets/jss/mkr/components/barMenusStyle";
+import barMenusStyle, { taskNavbarStyleBase, channelBarStyleBase, channelBarStyleClosed } from "assets/jss/mkr/components/barMenusStyle";
 
 import GridItem from "components/Grid/GridItem";
 import CustomButton from "../../components/CustomButtons/Button";
+import { DialogWarning } from "../../components/CustomDialog/CustomDialog";
 import CustomDropdown from "../../components/CustomDropdown/CustomDropdown";
 
-export const barMenuStyles = styles;
-
 export function AppBar(props) {
-  const classes = props.classes;
+  let useStyles = makeStyles(theme => barMenusStyle);
+  let classes = useStyles();
+  classes = { ...classes, ...props.classes };
+  const [isExitConfirmationDialogOpen, setIsExitConfirmationDangerOpen] = useState(false);
   return (
-    <MuiAppBar className={classNames(classes.AppBar)}>
+    <MuiAppBar className={classes.appBar}>
       <Toolbar>
         <Box
           flexGrow={1}>
-          <CustomButton onClick={props.toggleOpenChannel} color='transparent'>
+          <CustomButton
+            onClick={props.onClickBrand ?
+              props.onClickBrand
+              :
+              () => setIsExitConfirmationDangerOpen(true)
+            }
+            color='transparent'
+          >
             <Typography
               component="h1"
               variant="h6"
@@ -45,7 +58,7 @@ export function AppBar(props) {
           </CustomButton>
         </Box>
         <CustomDropdown
-          buttonIcon={MeetingRoomIcon}
+          buttonIcon={ExitToApp}
           hoverColor="transparent"
           buttonProps={{
             className: classes.dropdownLink,
@@ -60,34 +73,59 @@ export function AppBar(props) {
           ]}
         />
       </Toolbar>
+      <DialogWarning
+        classes={props.classes}
+        open={isExitConfirmationDialogOpen}
+        modalTitle="Exit?"
+        modalDescriptionHTML={
+          <p>
+            Exit to Huddle homepage? <br /><br /> Your changes will be discarded.
+          </p>
+        }
+        modalActionButtonHTML={
+          <Link to={URL.home}>
+            <CustomButton color="danger" simple > <MeetingRoomIcon /> Exit </CustomButton>
+          </Link>
+        }
+        onCloseEvent={() => setIsExitConfirmationDangerOpen(false)}
+      />
     </MuiAppBar>
   );
 };
+AppBar.propTypes = {
+  classes: PropTypes.object,
+  onClickBrand: PropTypes.func,
+};
 
 export function TaskNavbar(props) {
-  const classes = props.classes;
+  let useStyles = makeStyles(theme => barMenusStyle);
+  let classes = useStyles();
+  classes = { ...classes, ...props.classes };
   return (
-    <TaskNavbarStyled className={classNames(classes.TaskNavbar)}>
+    <TaskNavbarStyled className={classes.taskNavbar}>
       <List>
-        <ListItem className={classes.TaskNavbarListItem}>
+        <ListItem className={classes.taskNavbarListItem}>
           <ForumIcon />
         </ListItem>
       </List>
     </TaskNavbarStyled >
   );
 };
-
+TaskNavbar.propTypes = {
+  classes: PropTypes.object,
+};
 const TaskNavbarStyled = styled(GridItem)(
   ({ theme }) => taskNavbarStyleBase(theme)
 );
 
 export function ChannelBar(props) {
-  const classes = props.classes;
+  let useStyles = makeStyles(theme => barMenusStyle);
+  let classes = useStyles();
+  classes = { ...classes, ...props.classes };
   return (
-    <ChannelBarStyled open={props.open} variant={props.variant} onClose={props.toggleOpenChannel}
-      className={classNames(classes.ChannelBar)}>
+    <ChannelBarStyled open={props.open} variant={props.variant} className={classes.channelBar}>
       <List>
-        <ListItem>
+        <ListItem onClick={props.toggleOpenChannel}>
           <Typography
             component="h1"
             variant="h6"
@@ -98,14 +136,19 @@ export function ChannelBar(props) {
           </Typography>
         </ListItem>
         <Divider />
-        <ListItem button>
+        <ListItem button onClick={props.toggleOpenChannel}>
           <ListItemText primary={<h5><PublicIcon /><b> General</b></h5>} />
         </ListItem>
       </List>
     </ChannelBarStyled>
   );
 };
-
+ChannelBar.propTypes = {
+  classes: PropTypes.object,
+  variant: PropTypes.string,
+  open: PropTypes.bool.isRequired,
+  toggleOpenChannel: PropTypes.func.isRequired,
+};
 const ChannelBarStyled = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open, variant, className }) => (
     {
@@ -117,3 +160,4 @@ const ChannelBarStyled = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !
       })
     })
 );
+

@@ -1,7 +1,7 @@
 /*eslint-disable*/
 import React, { useContext } from 'react';
 // react components for routing our app without refresh
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { URL } from "../../AppLinks"
 import { AuthContext } from '../../context/auth';
 
@@ -21,7 +21,6 @@ import styles from "assets/jss/mkr/components/headerLinksStyle";
 const useStyles = makeStyles(styles);
 
 export default function HeaderLinks(props) {
-  let history = useHistory();
   const classes = useStyles();
   const { authState } = useContext(AuthContext);
   return (
