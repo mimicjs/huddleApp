@@ -1,5 +1,5 @@
 # huddleApp
-https://huddleapp-server.herokuapp.com/profile
+https://jackyshew.me/profile
 
 Typescript, GraphQL, ReactJS, MongoDB, ES6, ExpressJS, NodeJS
 
